@@ -92,13 +92,12 @@ void _register() async {
       // Crear un nuevo documento en Firestore para este usuario
       await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
         'email': user.email,
-        'role': 'user', // Puedes ajustar esto según tu lógica de roles
+        'role': 'client', 
       });
 
-      // Navegar a la pantalla principal o mostrar un mensaje de éxito
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ClientHomeScreen()), // Reemplaza con la pantalla adecuada
+        MaterialPageRoute(builder: (context) => ClientHomeScreen()), 
       );
     }
   } catch (e) {

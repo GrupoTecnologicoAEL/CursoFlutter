@@ -22,7 +22,8 @@ class AuthProvider extends ChangeNotifier {
   // Función para iniciar sesión con Google
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
-      final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
@@ -30,14 +31,16 @@ class AuthProvider extends ChangeNotifier {
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken,
         );
-        final UserCredential authResult = await _auth.signInWithCredential(credential);
+        final UserCredential authResult =
+            await _auth.signInWithCredential(credential);
         final User? user = authResult.user;
-        final AdditionalUserInfo? additionalUserInfo = authResult.additionalUserInfo;
+        final AdditionalUserInfo? additionalUserInfo =
+            authResult.additionalUserInfo;
 
         if (user != null) {
           final role = await _getUserRole(user);
           if (additionalUserInfo?.isNewUser == true) {
-            context.go('/register');
+            context.go('/client');
           } else {
             context.go(role == 'admin' ? '/admin' : '/client');
           }
@@ -50,9 +53,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Función para registrarse con email y contraseña
-  Future<void> signUp(BuildContext context, String email, String password) async {
+  Future<void> signUp(
+      BuildContext context, String email, String password) async {
     try {
-      final UserCredential credential = await _auth.createUserWithEmailAndPassword(
+      final UserCredential credential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -68,7 +73,8 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Función para iniciar sesión con email y contraseña
-  Future<String> signIn(BuildContext context, String email, String password) async {
+  Future<String> signIn(
+      BuildContext context, String email, String password) async {
     try {
       final UserCredential credential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -108,7 +114,7 @@ final appRouter = GoRouter(
   initialLocation: '/login',
   redirect: (BuildContext context, GoRouterState state) async {
     final isLoggedIn = FirebaseAuth.instance.currentUser != null;
-    
+
     if (isLoggedIn) {
       final user = FirebaseAuth.instance.currentUser!;
       final role = await FirebaseFirestore.instance

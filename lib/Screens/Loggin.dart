@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import 'Admin/admin_screen.dart';
+import '../Screens/Admin/admin_screen.dart';
 import 'Client/client_screen.dart';
 
 class AuthProvider extends ChangeNotifier {

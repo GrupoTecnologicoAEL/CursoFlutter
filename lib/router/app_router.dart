@@ -4,9 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 // Importaciones de las pantallas necesarias para la navegación
-import '../Screens/Admin/admin_screen.dart';
-import '../Screens/Client/client_screen.dart';
 import '../Screens/Loggin.dart';
+import '../Screens/Admin/admin_screen.dart';
+import '../Screens/Admin/crud_product.dart';
+import '../Screens/Client/client_screen.dart';
+import '../Screens/Client/product_list_screen.dart';
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -40,8 +43,16 @@ final appRouter = GoRouter(
       builder: (context, state) => AdminHomeScreen(),
     ),
     GoRoute(
+      path: '/admin/add-edit-product',
+      builder: (context, state) => AddEditProductScreen(),
+    ),
+    GoRoute(
       path: '/client',
       builder: (context, state) => ClientHomeScreen(),
+    ),
+    GoRoute(
+      path: '/admin/product-list',
+      builder: (context, state) => ProductListScreen(),
     ),
   ],
 );

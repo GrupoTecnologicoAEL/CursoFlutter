@@ -90,9 +90,17 @@ class AuthProvider extends ChangeNotifier {
       } else {
         return "El usuario no existe, debe registrarse";
       }
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'user-not-found') {
+        return "No se encontró un usuario con ese correo electrónico";
+      } else if (error.code == 'wrong-password') {
+        return "Contraseña incorrecta";
+      } else {
+        return "Error en el inicio de sesión";
+      }
     } catch (error) {
-      print("Error en el inicio de sesión: $error");
-      return "Correo o contraseña incorrectos";
+      print("Error en el inicio de sesión");
+      return "Error desconocido, inténtelo de nuevo más tarde";
     }
   }
 
@@ -148,11 +156,34 @@ final appRouter = GoRouter(
   ],
 );
 
-// Pantalla de inicio de sesión
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
 
-class LoginScreen extends StatelessWidget {
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String _errorMessage = '';
+
+  void _handleSignIn(AuthProvider authProvider) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Por favor, complete todos los campos';
+      });
+      return;
+    }
+
+    final result = await authProvider.signIn(context, email, password);
+    if (result != "Inicio de sesión exitoso") {
+      setState(() {
+        _errorMessage = result;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +197,11 @@ class LoginScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            if (_errorMessage.isNotEmpty)
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
@@ -177,16 +213,12 @@ class LoginScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => authProvider.signIn(
-                context,
-                _emailController.text,
-                _passwordController.text,
-              ),
-              child: Text('Login'),
+              onPressed: () => _handleSignIn(authProvider),
+              child: Text('Iniciar sesión'),
             ),
             TextButton(
               onPressed: () => authProvider.signInWithGoogle(context),
-              child: Text('Login with Google'),
+              child: Text('Iniciar Sesión con Google'),
             ),
             TextButton(
               onPressed: () => authProvider.signUp(
@@ -194,11 +226,11 @@ class LoginScreen extends StatelessWidget {
                 _emailController.text,
                 _passwordController.text,
               ),
-              child: Text('Create Account'),
+              child: Text('Crear Cuenta'),
             ),
             TextButton(
               onPressed: () => authProvider.signOut(),
-              child: Text('Forgot Password?'),
+              child: Text('Olvidé mi contraseña'),
             ),
           ],
         ),

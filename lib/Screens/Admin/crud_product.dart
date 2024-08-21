@@ -98,7 +98,6 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
         };
 
         if (widget.productId == null) {
-          // Crear producto
           final response = await http.post(
             Uri.parse('http://localhost:5001/api/products'),
             headers: {'Content-Type': 'application/json'},
@@ -109,7 +108,6 @@ class _AddEditProductScreenState extends State<AddEditProductScreen> {
             throw Exception('Failed to create product');
           }
         } else {
-          // Editar producto
           final response = await http.put(
             Uri.parse('http://localhost:5001/api/products/${widget.productId}'),
             headers: {'Content-Type': 'application/json'},

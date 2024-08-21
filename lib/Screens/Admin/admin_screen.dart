@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Loggin.dart';
-import '../Admin/crud_product.dart';
-
+import '../Admin/admin_list_product.dart';
 class AdminHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,15 +13,15 @@ class AdminHomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Bienvenido, Admin!'),
-            SizedBox(height: 20), // Espacio entre el texto y el botón
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddEditProductScreen()),
+                  MaterialPageRoute(builder: (context) => AdminProductListScreen()),
                 );
               },
-              child: Text('Ir!'),
+              child: Text('Ver mis productos'),
             ),
             SizedBox(height: 30),
             ElevatedButton(

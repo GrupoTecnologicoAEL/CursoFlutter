@@ -2,23 +2,29 @@ import 'package:flutter/material.dart';
 import '../../models/product.dart';
 import '../../services/api_service.dart';
 
-
 class ProductListScreen extends StatefulWidget {
   @override
   _ProductListScreenState createState() => _ProductListScreenState();
 }
 
-class _ProductListScreenState extends State <ProductListScreen>{
-late Future<List<Product>> futureProducts;
-final ApiService apiService = ApiService();
+class _ProductListScreenState extends State<ProductListScreen> {
+  late Future<List<Product>> futureProducts;
+  final ApiService apiService = ApiService();
 
-@override
+  @override
   void initState() {
     super.initState();
     futureProducts = apiService.getProduct();
   }
- @override
+
+  @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    // Definir el número de columnas dependiendo del ancho de la pantalla
+    int crossAxisCount = screenWidth > 500 ? 3 : 2;
+    double childAspectRatio = screenWidth > 500 ? 2 / 3 : 1 / 1.5;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Productos'),
@@ -35,8 +41,8 @@ final ApiService apiService = ApiService();
           } else {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2 / 3,
+                crossAxisCount: crossAxisCount, 
+                childAspectRatio: childAspectRatio, 
               ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {

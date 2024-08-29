@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Loggin.dart';
 import '../Admin/admin_list_product.dart';
+import '../Admin/orders/orders_screen.dart';
 class AdminHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,17 @@ class AdminHomeScreen extends StatelessWidget {
               },
               child: Text('Ver mis productos'),
             ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AdminOrdersScreen()),
+                );
+              },
+              child: Text('Ver mis ordenes'),
+            ),
+            
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {

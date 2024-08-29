@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 
 // Importaciones de las pantallas necesarias para la navegación
 import '../Screens/Loggin.dart';
@@ -74,3 +71,5 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+

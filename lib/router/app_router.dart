@@ -9,7 +9,9 @@ import '../Screens/Admin/admin_screen.dart';
 import '../Screens/Admin/crud_product.dart';
 import '../Screens/Client/client_screen.dart';
 import '../Screens/Client/product_list_screen.dart';
-
+import '../Screens/Client/cart/cart_screen.dart';
+import '../Screens/Client/cart/chekout_screen.dart';
+import '../Screens/Client/cart/order_status_screen.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -51,9 +53,22 @@ final appRouter = GoRouter(
       builder: (context, state) => ClientHomeScreen(),
     ),
     GoRoute(
-      path: '/admin/product-list',
+      path: '/client/product-list',
       builder: (context, state) => ProductListScreen(),
     ),
+    GoRoute(
+      path: '/cart',
+      builder: (context, state) => CartScreen(),
+    ),
+    GoRoute(
+      path: '/checkout',
+      builder: (context, state) => CheckoutScreen(),
+    ),
+    GoRoute(
+      path: '/orders',
+      builder: (context, state) => ClientOrdersScreen(clientId: _auth.currentUser!.uid),
+    ),
+
   ],
 );
 

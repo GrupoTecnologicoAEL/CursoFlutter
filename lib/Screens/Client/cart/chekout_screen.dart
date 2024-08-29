@@ -54,8 +54,8 @@ class CheckoutScreen extends StatelessWidget {
                   'clientId': user!.uid,
                   'nameCustomer': _nameController.text,
                   'products': cartProvider.items.map((item) => {
-                    'productId': item.id,
-                    'productName': item.name,
+                  'productId': item.product.id,
+                  'productName': item.product.name,
                     'quantity': 1, // Puedes ajustar esto si manejas cantidades variables
                   }).toList(),
                   'status': 'Pedido tomado',
@@ -78,3 +78,4 @@ class CheckoutScreen extends StatelessWidget {
     );
   }
 }
+//SS

@@ -19,17 +19,28 @@ class CartScreen extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               itemCount: cart.items.length,
-              itemBuilder: (ctx, i) => ListTile(
-                leading: Image.network(cart.items[i].imageUrl),
-                title: Text(cart.items[i].name),
-                subtitle: Text('Cantidad: 1'),
-                trailing: IconButton(
-                  icon: Icon(Icons.remove_circle),
-                  onPressed: () {
-                    cart.removeItem(cart.items[i]);
-                  },
-                ),
-              ),
+              itemBuilder: (ctx, i) {
+                final cartItem = cart.items[i];
+                final totalProductPrice = cartItem.product.price * cartItem.quantity;
+                
+                return ListTile(
+                  leading: Image.network(cartItem.product.imageUrl),
+                  title: Text(cartItem.product.name),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Cantidad: ${cartItem.quantity}'),
+                      Text('Total: Q${totalProductPrice.toStringAsFixed(2)}'),  
+                    ],
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.remove_circle),
+                    onPressed: () {
+                      cart.removeItem(cartItem.product);  
+                    },
+                  ),
+                );
+              },
             ),
           ),
           Padding(
@@ -60,3 +71,4 @@ class CartScreen extends StatelessWidget {
     );
   }
 }
+//Para pr 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../Client/product_list_screen.dart';
-import '../Loggin.dart';
+import '../Loggin.dart' as supAuth;
+import 'package:go_router/go_router.dart';
 
 class ClientHomeScreen extends StatelessWidget {
   @override
@@ -26,11 +27,10 @@ class ClientHomeScreen extends StatelessWidget {
             ),
             SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
+              onPressed: () async {
+                final authProvider = supAuth.AuthProvider();
+                await authProvider.signOut();
+                GoRouter.of(context).go('/login');
               },
               child: Text('Logout!'),
             ),
@@ -40,5 +40,3 @@ class ClientHomeScreen extends StatelessWidget {
     );
   }
 }
-
-

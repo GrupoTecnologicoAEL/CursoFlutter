@@ -19,6 +19,17 @@ class AuthProvider extends ChangeNotifier {
     return doc.data()?['role'] ?? 'client'; // Asume 'client' si no hay rol.
   }
 
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      print("Correo de restablecimiento de contraseña enviado a $email");
+    } catch (error) {
+      print(
+          "Error al enviar el correo de restablecimiento de contraseña: $error");
+      throw error;
+    }
+  }
+
   // Función para iniciar sesión con Google
   Future<void> signInWithGoogle(BuildContext context) async {
     try {
@@ -53,8 +64,14 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // Función para registrarse con email y contraseña
-  Future<void> signUp(
-      BuildContext context, String email, String password) async {
+  Future<void> signUp({
+    required BuildContext context,
+    required String name,
+    required String address,
+    required String contact,
+    required String email,
+    required String password,
+  }) async {
     try {
       final UserCredential credential =
           await _auth.createUserWithEmailAndPassword(
@@ -64,11 +81,21 @@ class AuthProvider extends ChangeNotifier {
       final User? user = credential.user;
 
       if (user != null) {
-        context.go('/register');
+        // Almacenar los datos adicionales en Firestore
+        await _firestore.collection('Users').doc(user.uid).set({
+          'name': name,
+          'address': address,
+          'contact': contact,
+          'email': email,
+          'role': 'client', // Asumiendo que el rol por defecto es 'client'
+        });
+
+        context.go('/client'); // Redirigir al usuario a la pantalla del cliente
         notifyListeners();
       }
     } catch (error) {
       print("Error en el registro: $error");
+      throw error; // Puedes manejar este error en el catch del código que llamas
     }
   }
 
@@ -185,6 +212,66 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _showResetPasswordDialog(BuildContext context) {
+    final TextEditingController _resetEmailController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Restablecer Contraseña'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Por favor, ingrese su correo electrónico:'),
+              TextField(
+                controller: _resetEmailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'ejemplo@correo.com',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cerrar el diálogo
+              },
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final email = _resetEmailController.text.trim();
+                if (email.isNotEmpty) {
+                  try {
+                    final authProvider = AuthProvider();
+                    await authProvider.resetPassword(email);
+                    Navigator.of(context).pop(); // Cerrar el diálogo
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Correo de restablecimiento enviado')),
+                    );
+                  } catch (error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error al enviar el correo')),
+                    );
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Por favor, ingrese un correo válido')),
+                  );
+                }
+              },
+              child: Text('Enviar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = AuthProvider();
@@ -221,15 +308,15 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text('Iniciar Sesión con Google'),
             ),
             TextButton(
-              onPressed: () => authProvider.signUp(
-                context,
-                _emailController.text,
-                _passwordController.text,
-              ),
+              onPressed: () {
+                GoRouter.of(context).go('/register');
+              },
               child: Text('Crear Cuenta'),
             ),
             TextButton(
-              onPressed: () => authProvider.signOut(),
+              onPressed: () {
+                _showResetPasswordDialog(context);
+              },
               child: Text('Olvidé mi contraseña'),
             ),
           ],

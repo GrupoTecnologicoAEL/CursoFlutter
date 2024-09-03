@@ -9,7 +9,7 @@ class CustomerOrder {
   final String nameCustomer; 
   final String deliveryAddress;
   final String notes;
-  
+  final String contact;
 
   CustomerOrder({
     required this.id,
@@ -20,7 +20,8 @@ class CustomerOrder {
     required this.nameCustomer,
     required this.deliveryAddress,
     required this.notes,
-    
+    required this.contact,
+
   });
 
     factory CustomerOrder.fromFirestore(DocumentSnapshot doc) {
@@ -37,6 +38,7 @@ class CustomerOrder {
       nameCustomer: data['nameCustomer'],
       deliveryAddress: data['deliveryAddress'],
       notes: data['notes'] ?? '',
+      contact: data['contact'] ?? 'Sin contacto'
     );
   }
 }

@@ -11,8 +11,21 @@ class BlogScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Bienvenido, a tú Blog!'),
+            Text(
+              'Bienvenido, a tu Blog!',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 30),
+            Icon(
+              Icons.build,  
+              size: 50,
+              color: Colors.blue,
+            ),
+            SizedBox(height: 20),
+            Text(
+              '¡Estamos trabajando en ello!',
+              style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+            ),
           ],
         ),
       ),

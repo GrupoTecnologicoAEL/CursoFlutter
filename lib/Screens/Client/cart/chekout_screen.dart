@@ -4,6 +4,7 @@ import '../../Admin/orders/orders_provider.dart';
 import '../cart/cart_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final _nameController = TextEditingController();
@@ -82,6 +83,7 @@ class CheckoutScreen extends StatelessWidget {
     'deliveryFee': 5.00,
     'deliveryAddress': _addressController.text,
     'notes': _notesController.text,
+    'orderDate': FieldValue.serverTimestamp(),
   };
 
   try {

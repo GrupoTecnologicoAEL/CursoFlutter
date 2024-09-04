@@ -63,7 +63,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  // Función para registrarse con email y contraseña
+
   Future<void> signUp({
     required BuildContext context,
     required String name,
@@ -87,7 +87,7 @@ class AuthProvider extends ChangeNotifier {
           'address': address,
           'contact': contact,
           'email': email,
-          'role': 'client', // Asumiendo que el rol por defecto es 'client'
+          'role': 'client', //Rol por defecto 
         });
 
         context.go('/client'); // Redirigir al usuario a la pantalla del cliente
@@ -95,7 +95,7 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (error) {
       print("Error en el registro: $error");
-      throw error; // Puedes manejar este error en el catch del código que llamas
+      throw error; 
     }
   }
 
@@ -298,22 +298,25 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () => _handleSignIn(authProvider),
               child: Text('Iniciar sesión'),
             ),
-            TextButton(
+            SizedBox(height: 10),
+            ElevatedButton(
               onPressed: () => authProvider.signInWithGoogle(context),
               child: Text('Iniciar Sesión con Google'),
             ),
-            TextButton(
+            SizedBox(height: 10),
+            ElevatedButton(
               onPressed: () {
                 GoRouter.of(context).go('/register');
               },
               child: Text('Crear Cuenta'),
             ),
-            TextButton(
+            SizedBox(height: 10),
+            ElevatedButton(
               onPressed: () {
                 _showResetPasswordDialog(context);
               },

@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import '../Screens/Loggin.dart'
-    as supAuth; 
-import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-final TextEditingController _nameController = TextEditingController();
-final TextEditingController _addressController = TextEditingController();
-final TextEditingController _contactController = TextEditingController();
-final TextEditingController _emailController = TextEditingController();
-final TextEditingController _passwordController = TextEditingController();
-
-class SignUpScreen extends StatefulWidget {
+class AdminCreateUserScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _AdminCreateUserScreenState createState() => _AdminCreateUserScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _AdminCreateUserScreenState extends State<AdminCreateUserScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
@@ -30,18 +23,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.clear();
   }
 
-  void _handleSignUp(supAuth.AuthProvider authProvider) async {
+  void _handleAdminCreateUser() async {
     final name = _nameController.text.trim();
     final address = _addressController.text.trim();
     final contact = _contactController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (name.isEmpty ||
-        address.isEmpty ||
-        contact.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty) {
+    if (name.isEmpty || address.isEmpty || contact.isEmpty || email.isEmpty || password.isEmpty) {
       setState(() {
         _errorMessage = 'Por favor, complete todos los campos';
       });
@@ -49,15 +38,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     try {
-      await authProvider.signUp(
-        context: context,
-        name: name,
-        address: address,
-        contact: contact,
+      // Crear el usuario en Firebase Auth
+      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      GoRouter.of(context).go('/login');
+      
+      // Obtener el UID del usuario
+      String uid = userCredential.user!.uid;
+
+      // Guardar los datos del usuario en Firestore
+      await FirebaseFirestore.instance.collection('Users').doc(uid).set({
+        'name': name,
+        'address': address,
+        'contact': contact,
+        'email': email,
+        'role': 'admin', // El rol es 'admin' porque lo está creando un administrador
+      });
+
+      // Limpiar campos de texto
+      _clearTextFields();
+
+      // Mostrar mensaje de éxito
+      setState(() {
+        _errorMessage = 'Usuario creado exitosamente';
+      });
     } catch (error) {
       setState(() {
         _errorMessage = error.toString();
@@ -67,13 +72,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _clearTextFields();
-    final authProvider = supAuth
-        .AuthProvider(); 
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Crear Cuenta'),
+        title: Text('Crear Usuario Admin'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             if (_errorMessage.isNotEmpty)
               Text(
                 _errorMessage,
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: _errorMessage.contains('exitosamente') ? Colors.green : Colors.red),
               ),
             TextField(
               controller: _nameController,
@@ -107,15 +108,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => _handleSignUp(authProvider),
-              child: Text('Registrar'),
-            ),
-            TextButton(
-              onPressed: () {
-                GoRouter.of(context)
-                    .go('/login'); 
-              },
-              child: Text('Regresar al Login'),
+              onPressed: _handleAdminCreateUser,
+              child: Text('Registrar Usuario Admin'),
             ),
           ],
         ),

@@ -4,7 +4,7 @@ import '../../Admin/orders/orders_provider.dart';
 import '../cart/cart_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CheckoutScreen extends StatelessWidget {
   final _nameController = TextEditingController();
@@ -49,26 +49,8 @@ class CheckoutScreen extends StatelessWidget {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                await _orderService.createOrder({
-                  'clientId': user!.uid,
-                  'nameCustomer': _nameController.text,
-                  'products': cartProvider.items.map((item) => {
-                  'productId': item.product.id,
-                  'productName': item.product.name,
-                    'quantity': 1, // Puedes ajustar esto si manejas cantidades variables
-                  }).toList(),
-                  'status': 'Pedido tomado',
-                  'totalPrice': cartProvider.totalAmount + 5.00,
-                  'deliveryFee': 5.00, // Asegúrate de pasar el texto aquí
-                  'deliveryAddress': _addressController.text,
-                  'notes': _notesController.text
-                });
-
-                cartProvider.clearCart();
-
-                // Navegar a la pantalla de estado del pedido
-                context.push('/orders');
+              onPressed: () {
+                _handleCheckout(context, cartProvider);
               },
               child: Text('Confirmar Pedido'),
             ),
@@ -77,5 +59,40 @@ class CheckoutScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _handleCheckout(BuildContext context, CartProvider cartProvider) async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  final List<Map<String, dynamic>> products = cartProvider.items.map((item) {
+  print('Producto: ${item.product.name}, Cantidad: ${item.quantity}');
+  return {
+    'productId': item.product.id,
+    'productName': item.product.name,
+    'quantity': item.quantity,
+  };
+}).toList();
+
+
+  final newOrder = {
+    'clientId': user!.uid,
+    'nameCustomer': _nameController.text,
+    'contact': _contactController.text,
+    'products': products,
+    'status': 'Pedido tomado',
+    'totalPrice': cartProvider.totalAmount + 5.00,
+    'deliveryFee': 5.00,
+    'deliveryAddress': _addressController.text,
+    'notes': _notesController.text,
+    'orderDate': FieldValue.serverTimestamp(),
+  };
+
+  try {
+    await _orderService.createOrder(newOrder);
+    cartProvider.clearCart();
+    context.pushReplacement('/orders');
+  } catch (e) {
+    print('Error al crear el pedido: $e');
+  }
 }
-//SSss
+
+}

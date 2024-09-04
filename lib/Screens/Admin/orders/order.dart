@@ -9,7 +9,8 @@ class CustomerOrder {
   final String nameCustomer; 
   final String deliveryAddress;
   final String notes;
-  
+  final String contact;
+  final DateTime? orderDate;
 
   CustomerOrder({
     required this.id,
@@ -20,10 +21,11 @@ class CustomerOrder {
     required this.nameCustomer,
     required this.deliveryAddress,
     required this.notes,
-    
+    required this.contact,
+    this.orderDate,
   });
 
-    factory CustomerOrder.fromFirestore(DocumentSnapshot doc) {
+  factory CustomerOrder.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return CustomerOrder(
       id: doc.id,
@@ -37,6 +39,8 @@ class CustomerOrder {
       nameCustomer: data['nameCustomer'],
       deliveryAddress: data['deliveryAddress'],
       notes: data['notes'] ?? '',
+      contact: data['contact'] ?? 'Sin contacto',
+      orderDate: (data['orderDate'] as Timestamp?)?.toDate(),
     );
   }
 }

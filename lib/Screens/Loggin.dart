@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../Screens/Admin/admin_screen.dart';
 import 'Client/client_screen.dart';
+import '../Screens/signUp.dart';
 
 class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -310,10 +311,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: () {
-                GoRouter.of(context).go('/register');
-              },
-              child: Text('Crear Cuenta'),
+            onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SignUpScreen(), // Redirige a la pantalla de registro
+            ));
+            },
+            child: Text('Crear Cuenta'),
             ),
             SizedBox(height: 10),
             ElevatedButton(

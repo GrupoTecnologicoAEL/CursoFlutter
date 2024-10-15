@@ -4,6 +4,7 @@ import '../Admin/orders/orders_screen.dart';
 import '../Admin/singUpAdmin.dart';  
 import '../Loggin.dart' as supAuth;
 import 'package:go_router/go_router.dart';
+import '../Admin/orders/sales_chart_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   @override
@@ -102,6 +103,18 @@ class AdminHomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AdminOrdersScreen()),
+                );
+              },
+            ),
+              _buildDashboardCard(
+              context,
+              title: 'Reportes',
+              count: 'Ver',
+              icon: Icons.bar_chart,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SalesChartScreen()),
                 );
               },
             ),

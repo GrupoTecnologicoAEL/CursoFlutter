@@ -1,30 +1,23 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:licuados/main.dart';
+import '../lib/Screens/Client/blog.dart'; 
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('BlogScreen renders with all blog posts', (WidgetTester tester) async {
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(MaterialApp(home: BlogScreen()));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    debugDumpApp();  
+
+    expect(find.text('Bienvenido a tu Blog Nutricional'), findsOneWidget);
+
+    debugPrint('Verificando los posts del blog...');
+    expect(find.text('La importancia de los macronutrientes'), findsOneWidget);
+    expect(find.text('Los micronutrientes y su papel en la salud'), findsOneWidget);
+
+    debugPrint('Prueba de BlogScreen completada.');
   });
 }
+
+

@@ -59,6 +59,7 @@ dependencies:
   image_picker: ^1.1.2
   http: ^1.0.0
   badges: ^2.0.2
+  fl_chart: ^0.69.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -67,6 +68,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.3.0 # o la versión más reciente
+  build_runner: ^2.0.0 # para generar los mocks
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
